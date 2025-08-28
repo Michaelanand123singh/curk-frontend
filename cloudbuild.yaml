@@ -35,7 +35,7 @@ steps:
         '--region', '${_REGION}',
         '--platform', 'managed',
         '--allow-unauthenticated',
-        '--port', '8000'
+        '--port', '3000'
       ]
 
 images:
@@ -46,6 +46,6 @@ options:
   logging: CLOUD_LOGGING_ONLY
   machineType: 'E2_HIGHCPU_8'
 
-timeout: '1200s'
+timeout: '3600s'
 
 
