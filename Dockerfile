@@ -26,9 +26,8 @@ FROM nginx:alpine
 # Install curl for health checks
 RUN apk add --no-cache curl
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nginx && \
-    adduser -S -D -H -u 1001 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx
+# The nginx:alpine image already has nginx user and group
+# Just ensure proper ownership of our content
 
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -36,7 +35,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 # Copy built application from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Set proper permissions
+# Set proper permissions (nginx user already exists)
 RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chmod -R 755 /usr/share/nginx/html
 
