@@ -1,36 +1,54 @@
-# Frontend Dockerfile (Vite + React → Nginx)
+# Multi-stage build for optimized production image
+FROM node:20-alpine AS builder
 
-## Build stage
-FROM node:20-alpine AS build
+# Set working directory
 WORKDIR /app
 
-# Install dependencies separately for better layer caching
+# Copy package files for dependency installation
 COPY package*.json ./
-RUN npm ci --no-audit --no-fund
 
-# Copy source and build
+# Install dependencies
+RUN npm ci --only=production --no-audit --no-fund
+
+# Copy source code
 COPY . .
 
-# Allow passing API base URL at build time
+# Build arguments for environment variables
 ARG VITE_API_URL
 ENV VITE_API_URL=${VITE_API_URL}
 
+# Build the application
 RUN npm run build
 
-## Runtime stage
+# Production stage
 FROM nginx:alpine
 
-# Nginx config for SPA routing
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nginx && \
+    adduser -S -D -H -u 1001 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx
+
+# Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Static assets
-COPY --from=build /app/dist /usr/share/nginx/html
+# Copy built application from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-EXPOSE 8000
+# Set proper permissions
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD wget -qO- http://localhost:3000/ || exit 1
+# Switch to non-root user
+USER nginx
 
+# Expose port (Cloud Run will override this)
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-8080}/ || exit 1
+
+# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
-
-
