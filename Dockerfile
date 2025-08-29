@@ -26,28 +26,35 @@ FROM nginx:alpine
 # Install curl for health checks
 RUN apk add --no-cache curl
 
-# The nginx:alpine image already has nginx user and group
-# Just ensure proper ownership of our content
-
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Set proper permissions (nginx user already exists)
-RUN chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R 755 /usr/share/nginx/html
+# Create necessary directories and set permissions for nginx to run as non-root
+RUN mkdir -p /var/cache/nginx/client_temp \
+    /var/cache/nginx/proxy_temp \
+    /var/cache/nginx/fastcgi_temp \
+    /var/cache/nginx/uwsgi_temp \
+    /var/cache/nginx/scgi_temp \
+    /var/log/nginx \
+    /var/run \
+    && chown -R nginx:nginx /var/cache/nginx \
+    /var/log/nginx \
+    /var/run \
+    /usr/share/nginx/html \
+    && chmod -R 755 /usr/share/nginx/html
 
 # Switch to non-root user
 USER nginx
 
-# Expose port (Cloud Run will override this)
+# Expose port
 EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8080}/ || exit 1
+    CMD curl -f http://localhost:8080/health || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
