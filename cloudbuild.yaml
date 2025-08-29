@@ -24,7 +24,7 @@ steps:
     dir: frontend
     args: ['push', 'gcr.io/$PROJECT_ID/${_SERVICE_NAME}:latest']
 
-  # Optional: deploy to Cloud Run if desired
+  # Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'deploy'
     entrypoint: gcloud
@@ -35,7 +35,8 @@ steps:
         '--region', '${_REGION}',
         '--platform', 'managed',
         '--allow-unauthenticated',
-        '--port', '3000'
+        '--port', '8080',
+        '--set-env-vars', 'PORT=8080'
       ]
 
 images:
@@ -47,5 +48,3 @@ options:
   machineType: 'E2_HIGHCPU_8'
 
 timeout: '3600s'
-
-
