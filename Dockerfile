@@ -8,7 +8,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install ALL dependencies (including devDependencies needed for build)
-RUN npm ci --no-audit --no-fund
+# Added --legacy-peer-deps to handle React 19 compatibility issues
+RUN npm ci --no-audit --no-fund --legacy-peer-deps
 
 # Copy source code
 COPY . .
