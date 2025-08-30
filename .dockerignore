@@ -9,8 +9,7 @@ dist/
 build/
 
 # Environment files
-.env*
-!.env.example
+
 
 # IDE
 .vscode/
