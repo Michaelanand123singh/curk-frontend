@@ -2,7 +2,7 @@
 substitutions:
   _SERVICE_NAME: website-analyzer-frontend
   _REGION: us-central1
-  _API_URL: https://REPLACE_WITH_BACKEND_URL/api/v1
+  _API_URL: https://curk-backend-553437330288.asia-southeast1.run.app/api/v1
 
 steps:
   - name: 'gcr.io/cloud-builders/docker'
