@@ -48,7 +48,7 @@ RUN mkdir -p /var/cache/nginx/client_temp \
     && chmod -R 755 /usr/share/nginx/html
 
 # Switch to non-root user
-USER nginx
+
 
 # Expose port
 EXPOSE 8080
