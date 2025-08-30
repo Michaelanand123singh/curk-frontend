@@ -58,5 +58,6 @@ export const ROUTES = {
   LEADS: '/leads',
   LEAD_TRACKER: '/lead-tracker',
   SETTINGS: '/settings',
-  DISCOVERY: '/discovery'
+  DISCOVERY: '/discovery',
+  AI_CALLING_AGENTS: '/ai-calling-agents'
 };

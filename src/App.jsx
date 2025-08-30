@@ -15,7 +15,9 @@ import LeadTrackerPage from './pages/LeadTrackerPage';
 import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
 import ProposalPage from './pages/ProposalPage';
+import AICallingAgentsPage from './pages/AICallingAgentsPage';
 import { ROUTES } from './utils/constants';
+import { OnboardingProvider, OnboardingGuide } from './components/onboarding';
 import './index.css';
 
 function RequireAuth({ children }) {
@@ -39,39 +41,43 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <Router>
-      <div className="App min-h-screen bg-gray-50 flex flex-col">
-        <Header onMenuClick={() => setSidebarOpen(true)} />
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <OnboardingProvider>
+      <Router>
+        <div className="App min-h-screen bg-gray-50 flex flex-col">
+          <Header onMenuClick={() => setSidebarOpen(true)} />
+          <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-        <div className="flex-1 flex">
-          {/* Sidebar spacer for desktop */}
-          <div className="hidden md:block md:w-64" />
-          <main className="flex-1">
-            <Routes>
-              <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-              <Route path={ROUTES.HOME} element={<RequireAuth><HomePage /></RequireAuth>} />
-              <Route path={ROUTES.ANALYZE} element={<RequireAuth><AnalyzePage /></RequireAuth>} />
-              <Route path={ROUTES.BULK} element={<RequireAuth><BulkPage /></RequireAuth>} />
-              <Route path={ROUTES.REPORTS} element={<RequireAuth><ReportsPage /></RequireAuth>} />
-              <Route path={ROUTES.DISCOVERY} element={<RequireAuth><DiscoveryPage /></RequireAuth>} />
-              <Route path={ROUTES.PROPOSALS_SEND} element={<RequireAuth><ProposalSendPage /></RequireAuth>} />
-              <Route path={ROUTES.PROPOSALS} element={<RequireAuth><ProposalPage /></RequireAuth>} />
-              <Route path={ROUTES.LEADS} element={<RequireAuth><LeadsPage /></RequireAuth>} />
-              <Route path={ROUTES.LEAD_TRACKER} element={<RequireAuth><LeadTrackerPage /></RequireAuth>} />
-              <Route path={ROUTES.SETTINGS} element={<RequireAuth><SettingsPage /></RequireAuth>} />
-              
-              {/* Catch all route - redirect to home */}
-              <Route path="*" element={
-                <Navigate to={ROUTES.HOME} replace />
-              } />
-            </Routes>
-          </main>
+          <div className="flex-1 flex">
+            {/* Sidebar spacer for desktop */}
+            <div className="hidden md:block md:w-64" />
+            <main className="flex-1 min-h-0">
+              <Routes>
+                <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+                <Route path={ROUTES.HOME} element={<RequireAuth><HomePage /></RequireAuth>} />
+                <Route path={ROUTES.ANALYZE} element={<RequireAuth><AnalyzePage /></RequireAuth>} />
+                <Route path={ROUTES.BULK} element={<RequireAuth><BulkPage /></RequireAuth>} />
+                <Route path={ROUTES.REPORTS} element={<RequireAuth><ReportsPage /></RequireAuth>} />
+                <Route path={ROUTES.DISCOVERY} element={<RequireAuth><DiscoveryPage /></RequireAuth>} />
+                <Route path={ROUTES.PROPOSALS_SEND} element={<RequireAuth><ProposalSendPage /></RequireAuth>} />
+                <Route path={ROUTES.LEADS} element={<RequireAuth><LeadsPage /></RequireAuth>} />
+                <Route path={ROUTES.LEAD_TRACKER} element={<RequireAuth><LeadTrackerPage /></RequireAuth>} />
+                <Route path={ROUTES.SETTINGS} element={<RequireAuth><SettingsPage /></RequireAuth>} />
+                <Route path={ROUTES.PROPOSALS} element={<RequireAuth><ProposalPage /></RequireAuth>} />
+                <Route path={ROUTES.AI_CALLING_AGENTS} element={<RequireAuth><AICallingAgentsPage /></RequireAuth>} />
+                
+                {/* Catch all route - redirect to home */}
+                <Route path="*" element={
+                  <Navigate to={ROUTES.HOME} replace />
+                } />
+              </Routes>
+            </main>
+          </div>
+
+          <Footer />
+          <OnboardingGuide />
         </div>
-
-        <Footer />
-      </div>
-    </Router>
+      </Router>
+    </OnboardingProvider>
   );
 }
 

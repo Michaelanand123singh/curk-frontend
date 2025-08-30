@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../utils/constants';
+import { TourButton } from '../onboarding';
 
 const Header = ({ onMenuClick }) => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const Header = ({ onMenuClick }) => {
   })();
   const logout = () => { localStorage.removeItem('auth'); navigate(ROUTES.LOGIN, { replace: true }); };
   return (
-    <header className="bg-white shadow-sm border-b sticky top-0 z-30">
+    <header className="bg-white shadow-sm border-b sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Brand */}
@@ -29,7 +30,8 @@ const Header = ({ onMenuClick }) => {
           </div>
 
           {/* Right side */}
-          <div>
+          <div className="flex items-center space-x-3">
+            {authed && <TourButton variant="icon" />}
             {authed ? (
               <button onClick={logout} className="px-3 py-1.5 text-sm bg-gray-100 rounded hover:bg-gray-200">Logout</button>
             ) : (
